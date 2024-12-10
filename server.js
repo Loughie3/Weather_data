@@ -1,11 +1,26 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const app = express();
+const cors = require("cors");
+const authRoutes = require("./routes/auth");
 const Weather = require("./models/weatherData");
+
+require("dotenv").config();
+
+const app = express();
+
+const corsOptions = {
+  origin: ["https://www.test-cors.org"], // Specify allowed origin
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allowed methods
+  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Preflight request handling
 
 app.use(express.json());
 
-//routes
+// Routes
+app.use("/auth", authRoutes); // All authentication-related routes
 
 //Retrieve a single record
 app.get("/weathers/:id", async (req, res) => {
@@ -259,7 +274,7 @@ app.get("/weathersProjection/:id", async (req, res) => {
       Precipitation: 1, // Include precipitation
       Latitude: 1, // Include latitude
       Longitude: 1, // Include longitude
-      _id: 1, 
+      _id: 1,
     });
 
     console.log("Projected weather document:", weather);
@@ -282,15 +297,15 @@ app.get("/weathersProjection/:id", async (req, res) => {
   }
 });
 
+// MongoDB connection
 mongoose.set("strictQuery", false);
 mongoose
-  .connect("mongodb://127.0.0.1:27017/weather_db")
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/weather_db")
+
   .then(() => {
-    console.log("Connected to weather_db");
+    console.log("Connected to MongoDB");
     app.listen(3000, () => {
-      console.log("Node API app is running on port 3000");
+      console.log("Server running on port 3000");
     });
   })
-  .catch((error) => {
-    console.log(error);
-  });
+  .catch((error) => console.error("Error connecting to MongoDB:", error));
