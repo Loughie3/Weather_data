@@ -10,4 +10,4 @@ logs/
 
 # OS-specific files
 .DS_Store
-Thumbs.db
+Thumbs.dbgit commit -m "Remove node_modules from tracking"

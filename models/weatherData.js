@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 
 // Define the schema
 const weatherDataSchema = new mongoose.Schema({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
-  },
   deviceName: {
     type: String,
     required: true,
